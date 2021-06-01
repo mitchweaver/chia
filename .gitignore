@@ -1,0 +1,10 @@
+.chia
+mainnet
+wallet
+*.pem
+*.crt
+*.key
+*.db
+*~*
+.bk
+.core
