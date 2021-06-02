@@ -6,7 +6,7 @@
 sudo yum update -y
 
 sudo yum install -y \
-    gcc openssl-devel bzip2-devel zlib-devel libffi
+    gcc openssl-devel bzip2-devel zlib-devel libffi \
     libffi-devel libsqlite3x-devel python3-devel gmp-devel  \
     boost-devel libsodium-devel wget nodejs npm
 
@@ -32,11 +32,11 @@ sh install-gui.sh
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # install
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-cd /tmp
-
 if [ -d /opt/chia-blockchain ] ; then
     sudo rm -rf /opt/chia-blockchain
 fi
+cd /tmp
+sudo mv chia-blockchain /opt/
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # helper files
@@ -45,9 +45,10 @@ fi
 cat >"${HOME}/.local/bin/chia-blockchain" <<EOF
 #!/bin/sh -ex
 cd /opt/chia-blockchain
-. ./active
+. ./activate
 cd chia-blockchain-gui
-exec npm run electron
+PYTHONPATH=..:.:$PYTHONPATH \
+npm run electron
 EOF
 chmod +x "${HOME}/.local/bin/chia-blockchain"
 
