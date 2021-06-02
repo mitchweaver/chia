@@ -8,7 +8,12 @@ sudo yum update -y
 sudo yum install -y \
     gcc openssl-devel bzip2-devel zlib-devel libffi \
     libffi-devel libsqlite3x-devel python3-devel gmp-devel  \
-    boost-devel libsodium-devel wget nodejs npm
+    boost-devel libsodium-devel wget nodejs npm python-websockets \
+    python3-pip
+
+# sudo pip install \
+    # blspy clvm clvm-rs clvm-tools keyring bitstring \
+    # keyrings.cryptfile aiohttp colorlog concurrent_log_handler
 
 sudo yum groupinstall -y "Development Tools"
 
@@ -45,8 +50,10 @@ sudo mv chia-blockchain /opt/
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # helper files
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+mkdir -p "${HOME}/.local/bin" "${HOME}/.local/applications"
+
 # wrapper
-cat >"${HOME}/.local/bin/chia-blockchain" <<EOF
+cat >"${HOME}/.local/bin/chia-blockchain" <<"EOF"
 #!/bin/sh -ex
 cd /opt/chia-blockchain
 . ./activate
@@ -55,6 +62,27 @@ PYTHONPATH=.:$PYTHONPATH \
 npm run electron
 EOF
 chmod +x "${HOME}/.local/bin/chia-blockchain"
+
+cat >"${HOME}/.local/bin/chia" <<"EOF"
+#!/bin/sh -ex
+cd /opt/chia-blockchain
+. ./activate
+PYTHONPATH=.:$PYTHONPATH \
+exec ./chia-cli "$@"
+EOF
+chmod +x "${HOME}/.local/bin/chia"
+
+sudo tee /opt/chia-blockchain/chia-cli <<EOF
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import re
+import sys
+from chia.cmds.chia import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
+EOF
+chmod +x /opt/chia-blockchain/chia-cli
 
 # desktop entry
 cat >"${HOME}/.local/applications/chia-blockchain.desktop" <<EOF
