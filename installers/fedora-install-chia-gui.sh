@@ -5,17 +5,16 @@
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 sudo yum update -y
 
+sudo yum groupinstall -y "Development Tools"
+
 sudo yum install -y \
     gcc openssl-devel bzip2-devel zlib-devel libffi \
     libffi-devel libsqlite3x-devel python3-devel gmp-devel  \
-    boost-devel libsodium-devel wget nodejs npm python-websockets \
-    python3-pip python3-click python3-yaml
+    boost-devel libsodium-devel wget nodejs npm python-websockets
 
-# sudo pip install \
-    # blspy clvm clvm-rs clvm-tools keyring bitstring \
-    # keyrings.cryptfile aiohttp colorlog concurrent_log_handler
-
-sudo yum groupinstall -y "Development Tools"
+sudo yum install -y \
+    python3-pip python3-setuptools \
+    python3-click python3-yaml
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # build
@@ -31,6 +30,21 @@ sh install.sh
 
 # shellcheck disable=1091
 . ./activate
+
+python3 setup.py install
+
+echo
+echo 'install the gui? (y/n):'
+read -r ans
+case $ans in
+    y)
+        echo Installing...
+        ;;
+    *)
+        echo Quitting.
+        exit
+esac
+echo
 
 sh install-gui.sh
 
@@ -48,7 +62,7 @@ cd /tmp
 sudo mv chia-blockchain /opt/
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-# helper files
+# helper files for gui
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 mkdir -p "${HOME}/.local/bin" "${HOME}/.local/applications"
 
@@ -62,27 +76,6 @@ PYTHONPATH=.:$PYTHONPATH \
 npm run electron
 EOF
 chmod +x "${HOME}/.local/bin/chia-blockchain"
-
-cat >"${HOME}/.local/bin/chia" <<"EOF"
-#!/bin/sh -ex
-cd /opt/chia-blockchain
-. ./activate
-PYTHONPATH=.:$PYTHONPATH \
-exec ./chia-cli "$@"
-EOF
-chmod +x "${HOME}/.local/bin/chia"
-
-sudo tee /opt/chia-blockchain/chia-cli <<EOF
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-import re
-import sys
-from chia.cmds.chia import main
-if __name__ == '__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
-    sys.exit(main())
-EOF
-chmod +x /opt/chia-blockchain/chia-cli
 
 # desktop entry
 cat >"${HOME}/.local/applications/chia-blockchain.desktop" <<EOF
