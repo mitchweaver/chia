@@ -9,7 +9,7 @@ sudo yum install -y \
     gcc openssl-devel bzip2-devel zlib-devel libffi \
     libffi-devel libsqlite3x-devel python3-devel gmp-devel  \
     boost-devel libsodium-devel wget nodejs npm python-websockets \
-    python3-pip
+    python3-pip python3-click python3-yaml
 
 # sudo pip install \
     # blspy clvm clvm-rs clvm-tools keyring bitstring \
