@@ -1,0 +1,20 @@
+#!/bin/sh
+
+usage() {
+    >&2 printf 'Usage: %s some_broken_db.sqlite\n' "${0##*/}"
+    exit 1
+}
+
+case $1 in
+    *.sqlite)
+        ;;
+    *)
+        exit 1
+esac
+
+if [ ! -f "$1" ] ; then
+    usage
+fi
+
+sqlite3 "$1" '.dump' | sqlite3 "$1".fixed
+mv -f "$1".fixed "$1"

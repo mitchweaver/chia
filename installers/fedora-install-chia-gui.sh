@@ -16,7 +16,7 @@ sudo yum groupinstall -y "Development Tools"
 # build
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 cd /tmp
-git clone https://github.com/Chia-Network/chia-blockchain.git
+git clone https://github.com/Chia-Network/chia-blockchain -b latest
 cd chia-blockchain
 
 sed -i 's/.*redhat.*/fedora/' install.sh
@@ -28,6 +28,10 @@ sh install.sh
 . ./activate
 
 sh install-gui.sh
+
+cd chia-blockchain-gui
+ln -sf ../chia chia
+ln -sf ../mozilla-ca mozilla-ca
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # install
@@ -47,7 +51,7 @@ cat >"${HOME}/.local/bin/chia-blockchain" <<EOF
 cd /opt/chia-blockchain
 . ./activate
 cd chia-blockchain-gui
-PYTHONPATH=..:.:$PYTHONPATH \
+PYTHONPATH=.:$PYTHONPATH \
 npm run electron
 EOF
 chmod +x "${HOME}/.local/bin/chia-blockchain"
