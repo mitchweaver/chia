@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if ! command -v chiaharvestgraph >/dev/null ; then
+    git clone https://github.com/stolk/chiaharvestgraph /tmp/chiaharvestgraph
+    cd /tmp/chiaharvestgraph
+    make
+    install -Dm0755 chiaharvestgraph ~/.local/bin/
+    cd -
+fi
+
+exec chiaharvestgraph ~/.chia/mainnet/log

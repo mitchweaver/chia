@@ -1,7 +1,10 @@
 PREFIX = ${HOME}/.local
 
-all:
-	install -Dm0755 bin/chia-logview.sh ${PREFIX}/bin/chia-logview.sh
+all: 
+	@echo "Use 'make install'."
+
+install:
+	install -Dm0755 bin/* ${PREFIX}/bin/
 
 test:
 	shellcheck -s sh bin/* installers/*

@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if ! command -v chiaplotgraph >/dev/null ; then
+    git clone http://github.com/stolk/chiaplotgraph /tmp/chiaplotgraph
+    cd /tmp/chiaplotgraph
+    make
+    install -Dm0755 chiaplotgraph ~/.local/bin/
+fi
+
+exec chiaplotgraph \
+    ~/.chia/mainnet/plotter/*.log
