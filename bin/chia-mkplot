@@ -49,18 +49,19 @@ launch() {
     fi
 
     # shellcheck disable=2046
-    nohup chia plots create \
-        -t "$STAGE_1_2_TEMP" \
-        -d "$DESTINATION" \
-        -2 "${STAGE_3_4_TEMP:-$STAGE_1_2_TEMP}" \
-        -k "${PLOT_SIZE:-32}" \
-        -n "${NUM_PLOTS:-1}" \
-        -u "${NUM_BUCKETS:-128}" \
-        -b "${MAX_MEMORY:-4608}" \
-        -r "${NUM_THREADS:-2}" \
-        $([ $DISABLE_BITFIELD = TRUE ] && printf '%s' '-e') \
-        > "${HOME}/.chia/mainnet/plotter/$NAME" 2>&1 &
-
+    {
+        chia plots create \
+            -t "$STAGE_1_2_TEMP" \
+            -d "$DESTINATION" \
+            -2 "${STAGE_3_4_TEMP:-$STAGE_1_2_TEMP}" \
+            -k "${PLOT_SIZE:-32}" \
+            -n "${NUM_PLOTS:-1}" \
+            -u "${NUM_BUCKETS:-128}" \
+            -b "${MAX_MEMORY:-4608}" \
+            -r "${NUM_THREADS:-2}" \
+            $([ $DISABLE_BITFIELD = TRUE ] && printf '%s' '-e') | \
+            tee "${HOME}/.chia/mainnet/plotter/$NAME"
+    } &
     disown
 }
 

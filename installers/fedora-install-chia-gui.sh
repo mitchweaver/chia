@@ -34,7 +34,7 @@ sh install.sh
 python3 setup.py install
 
 echo
-echo 'install the gui? (y/n):'
+printf 'install the gui? (y/n):'
 read -r ans
 case $ans in
     y)
@@ -72,7 +72,7 @@ cat >"${HOME}/.local/bin/chia-blockchain" <<"EOF"
 cd /opt/chia-blockchain
 . ./activate
 cd chia-blockchain-gui
-PYTHONPATH=.:$PYTHONPATH \
+PYTHONPATH=.:../venv/lib/python3.9/site-packages:$PYTHONPATH \
 npm run electron
 EOF
 chmod +x "${HOME}/.local/bin/chia-blockchain"
