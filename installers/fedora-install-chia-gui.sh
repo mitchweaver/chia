@@ -17,11 +17,15 @@ sudo yum install -y \
     python3-click python3-yaml
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-# build
+# build ---- NOTE: recently learned it MUST be built at the
+#                  directory it will be installed at!
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-cd /tmp
-git clone https://github.com/Chia-Network/chia-blockchain -b latest
-cd chia-blockchain
+if [ -d /opt/chia-blockchain ] ; then
+    sudo rm -rf /opt/chia-blockchain
+fi
+git clone https://github.com/Chia-Network/chia-blockchain -b latest /tmp/chia-blockchain
+sudo mv -f /tmp/chia-blockchain /opt/
+cd /opt/chia-blockchain
 
 sed -i 's/.*redhat.*/fedora/' install.sh
 sed -i 's/.*redhat.*/fedora/' install-gui.sh
@@ -31,7 +35,9 @@ sh install.sh
 # shellcheck disable=1091
 . ./activate
 
-python3 setup.py install
+sudo python3 setup.py install
+
+# =/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=/=
 
 echo
 printf 'install the gui? (y/n):'
@@ -51,15 +57,6 @@ sh install-gui.sh
 cd chia-blockchain-gui
 ln -sf ../chia chia
 ln -sf ../mozilla-ca mozilla-ca
-
-# -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-# install
-# -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-if [ -d /opt/chia-blockchain ] ; then
-    sudo rm -rf /opt/chia-blockchain
-fi
-cd /tmp
-sudo mv chia-blockchain /opt/
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # helper files for gui
