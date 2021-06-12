@@ -6,7 +6,8 @@
 sudo apt update -y
 
 sudo apt install -y \
-    build-essential git npm wget
+    build-essential git npm wget \
+    python3 python3-setuptools python3-pip
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # build ---- NOTE: recently learned it MUST be built at the
